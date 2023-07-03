@@ -27,6 +27,13 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // Добавлено
+    implementation 'org.springframework.boot:spring-boot-starter-web' // Для реста
+    compileOnly 'org.projectlombok:lombok:1.18.28'
+    annotationProcessor 'org.projectlombok:lombok:1.18.28'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // Для репозитория
+    implementation 'com.h2database:h2:2.1.214'
+    runtimeOnly 'org.postgresql:postgresql:42.6.0'
 }
 
 tasks.named('test') {
