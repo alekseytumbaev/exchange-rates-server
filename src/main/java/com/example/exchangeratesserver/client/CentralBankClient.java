@@ -60,24 +60,33 @@ public class CentralBankClient {
         ResponseEntity<String> response = restTemplate.exchange(SOAP_ENDPOINT, POST, request, String.class);
         log.info("Получен ответ от центробанка: {}", response);
 
-        ValuteDataXml valuteData;
+        return parseXmlResponse(response.getBody());
+    }
+
+    /**
+     * Функция для парсинга ответа центробанка по запросу GetCursOnDateXML
+     * @throws ResponseParsingException не удалось распарсить ответ
+     */
+    private ValuteDataXml parseXmlResponse(String xml) {
+
         try {
-            JsonNode root = xmlMapper.readTree(response.getBody());
+            JsonNode root = xmlMapper.readTree(xml);
             JsonNode valuteDataNode = root.path("Body")
                     .path("GetCursOnDateXMLResponse")
                     .path("GetCursOnDateXMLResult")
                     .path("ValuteData");
 
-            valuteData = xmlMapper.treeToValue(valuteDataNode, ValuteDataXml.class);
+            ValuteDataXml valuteData = xmlMapper.treeToValue(valuteDataNode, ValuteDataXml.class);
 
             //Сервер возвращает название валюты с большим количество пробелов, убираем их
             for (ValuteRateXml valuteRateXml : valuteData.getValuteRates()) {
                 String name = valuteRateXml.getName();
                 valuteRateXml.setName(name.trim());
             }
+
+            return valuteData;
         } catch (IOException e) {
             throw new ResponseParsingException("Ошибка парсинга ответа от центробанка", e);
         }
-        return valuteData;
     }
 }

@@ -40,11 +40,11 @@ public class ValuteRate {
     void setChCode(String chCode) // Чтобы не ввели больше символов, чем выделено в бд
     {
         if (chCode.length() <= MAX_CH_CODE) this.chCode = chCode;
-        else chCode = chCode.substring(0, MAX_CH_CODE); // Обрезать до 20 символов
+        else this.chCode = chCode.substring(0, MAX_CH_CODE); // Обрезать до 20 символов
     }
     void setValuteName(String valuteName)
     {
         if (valuteName.length() <= MAX_VALUTE_NAME) this.valuteName = valuteName;
-        else valuteName = valuteName.substring(0, MAX_VALUTE_NAME); // Обрезать до 150 символов
+        else this.valuteName = valuteName.substring(0, MAX_VALUTE_NAME); // Обрезать до 150 символов
     }
 }
