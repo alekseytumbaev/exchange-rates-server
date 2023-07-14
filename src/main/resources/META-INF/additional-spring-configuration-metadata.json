@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "notifications.rates-updates.frequency",
+      "type": "java.lang.Long",
+      "description": "Частота проверки на изменения курсов валют в миллисекундах."
+    },
+    {
+      "name": "notifications.rates-updates.test-notification",
+      "type": "java.lang.Boolean",
+      "description": "Активация тестовых уведомлений об изменении курсов."
+    }
+  ] }
