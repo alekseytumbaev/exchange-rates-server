@@ -2,9 +2,13 @@ package com.example.exchangeratesserver.service;
 
 import com.example.exchangeratesserver.client.CentralBankClient;
 import com.example.exchangeratesserver.client.exception.FutureDateRequestException;
+import com.example.exchangeratesserver.client.exception.IllegalStartEndDate;
+import com.example.exchangeratesserver.client.model.ValuteCode;
+import com.example.exchangeratesserver.client.model.ValuteCursDynamicXml;
 import com.example.exchangeratesserver.client.model.ValuteDataXml;
 import com.example.exchangeratesserver.exception.FutureDateSavingException;
 import com.example.exchangeratesserver.exception.RatesAlreadyExistForDateException;
+import com.example.exchangeratesserver.exception.ValuteCodeNotSupportedException;
 import com.example.exchangeratesserver.mapper.ValuteRateMapper;
 import com.example.exchangeratesserver.model.ValuteRate;
 import com.example.exchangeratesserver.model.ValuteRateDto;
@@ -37,6 +41,32 @@ public class ValuteRateService {
             repo.saveAll(getRatesFromCentralBank(now));
         }
         lastUpdateDate = now;
+    }
+
+    /**
+     * Получает динамику указанной валюты за указанную дату
+     * @param from начальная дата
+     * @param to конченая дата
+     * @param isoChCode код валюты
+     * @throws ValuteCodeNotSupportedException указанного курса валюты нет
+     * @throws IllegalStartEndDate начальная дата раньше конечной
+     */
+    public List<ValuteRateDto> getCursDynamic(LocalDate from, LocalDate to, String isoChCode) {
+        ValuteCode code;
+        try {
+            code = ValuteCode.valueOf(isoChCode);
+        } catch (IllegalArgumentException e) {
+            throw new ValuteCodeNotSupportedException(format("Валюта '%s' не найдена", isoChCode));
+        }
+
+        if (to.isBefore(from) || to.isEqual(from)) {
+            throw new IllegalStartEndDate(
+                    format("Начальная дата не может быть раньше и равной конечной. Начальная дата - '%s', конечная - '%s'", from, to)
+            );
+        }
+        List<ValuteCursDynamicXml> dynamics = cbClient.getValuteCursDynamic(from, to, code);
+
+        return dynamics.stream().map(d -> ValuteRateMapper.toDto(d, code)).toList();
     }
 
     /**

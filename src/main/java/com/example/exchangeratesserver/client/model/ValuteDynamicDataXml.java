@@ -1,6 +1,5 @@
 package com.example.exchangeratesserver.client.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -8,20 +7,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.List;
 
-@Data
 @JacksonXmlRootElement(localName = "ValuteData")
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ValuteDataXml {
+public class ValuteDynamicDataXml {
 
-    @JacksonXmlElementWrapper(localName = "ValuteCurtsOnDateList", useWrapping = false)
-    @JacksonXmlProperty(localName = "ValuteCursOnDate")
-    private List<ValuteRateXml> valuteRates;
-
-    @JacksonXmlProperty(localName = "OnDate")
-    @JsonFormat(pattern = "yyyyMMdd")
-    private LocalDate date;
+    @JacksonXmlElementWrapper(localName = "ValuteCursDynamicList", useWrapping = false)
+    @JacksonXmlProperty(localName = "ValuteCursDynamic")
+    private List<ValuteCursDynamicXml> cursDynamics;
 }
