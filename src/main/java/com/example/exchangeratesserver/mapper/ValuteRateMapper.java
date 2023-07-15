@@ -1,5 +1,7 @@
 package com.example.exchangeratesserver.mapper;
 
+import com.example.exchangeratesserver.client.model.ValuteCode;
+import com.example.exchangeratesserver.client.model.ValuteCursDynamicXml;
 import com.example.exchangeratesserver.client.model.ValuteRateXml;
 import com.example.exchangeratesserver.model.ValuteRate;
 import com.example.exchangeratesserver.model.ValuteRateDto;
@@ -28,7 +30,7 @@ public class ValuteRateMapper {
     }
 
     /**
-     * * @param date дата за которую получена информация о курсе
+     * @param date дата за которую получена информация о курсе
      */
     public ValuteRate toEntity(ValuteRateXml valuteRateXml, LocalDate date) {
         return new ValuteRate(
@@ -38,6 +40,17 @@ public class ValuteRateMapper {
                 valuteRateXml.getNom(),
                 rublesToPennies(valuteRateXml.getCurs()),
                 date
+        );
+    }
+
+    public ValuteRateDto toDto(ValuteCursDynamicXml cursDynamic, ValuteCode code) {
+        return new ValuteRateDto(
+                code.getIsoCode(),
+                code.toString(),
+                code.getName(),
+                cursDynamic.getNom(),
+                cursDynamic.getCurs(),
+                cursDynamic.getCursDate().toLocalDate()
         );
     }
 

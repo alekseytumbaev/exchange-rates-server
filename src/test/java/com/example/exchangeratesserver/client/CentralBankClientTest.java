@@ -1,6 +1,8 @@
 package com.example.exchangeratesserver.client;
 
 import com.example.exchangeratesserver.client.exception.FutureDateRequestException;
+import com.example.exchangeratesserver.client.model.ValuteCode;
+import com.example.exchangeratesserver.client.model.ValuteCursDynamicXml;
 import com.example.exchangeratesserver.client.model.ValuteDataXml;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,5 +45,15 @@ class CentralBankClientTest {
                 () -> centralBankClient.getValuteData(LocalDate.now().plusDays(1)),
                 "Должно быть исключение, если дата указана в будущем"
         );
+    }
+
+    @Test
+    @DisplayName("Получить курс указанной валюты за указанный период")
+    void getValuteCursDynamicTest() {
+        LocalDate to = LocalDate.now();
+        LocalDate from = to.minusDays(7);
+        List<ValuteCursDynamicXml> valuteCursDynamic = centralBankClient.getValuteCursDynamic(from, to, ValuteCode.USD);
+        assertNotNull(valuteCursDynamic, "Список курсов не должен быть null");
+        assertFalse(valuteCursDynamic.isEmpty(), "Список курсов не должен быть пустым");
     }
 }

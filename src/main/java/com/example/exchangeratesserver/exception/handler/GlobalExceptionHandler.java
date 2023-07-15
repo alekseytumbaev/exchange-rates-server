@@ -1,8 +1,10 @@
 package com.example.exchangeratesserver.exception.handler;
 
+import com.example.exchangeratesserver.client.exception.IllegalStartEndDate;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -15,6 +17,13 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 //отправка ошибок при http-запросах по стандарту RFC 7807
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(IllegalStartEndDate.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ErrorResponse onIllegalStartEndDate(final IllegalStartEndDate e) {
+        logger.warn("Неправильная дата начала и конца: {}", e);
+        return ErrorResponse.create(e, BAD_REQUEST, e.getMessage());
+    }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ErrorResponse onConstraintViolationException(final ConstraintViolationException e) {
