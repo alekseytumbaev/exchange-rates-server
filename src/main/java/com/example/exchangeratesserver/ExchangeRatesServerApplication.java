@@ -1,12 +1,12 @@
 package com.example.exchangeratesserver;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 
 
 @SpringBootApplication
-@RequiredArgsConstructor
+@ServletComponentScan
 public class ExchangeRatesServerApplication {
 
     public static void main(String[] args) {

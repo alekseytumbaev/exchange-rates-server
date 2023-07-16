@@ -2,6 +2,7 @@ package com.example.exchangeratesserver.exception.handler;
 
 import com.example.exchangeratesserver.client.exception.IllegalStartEndDate;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -16,18 +17,19 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 //отправка ошибок при http-запросах по стандарту RFC 7807
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(IllegalStartEndDate.class)
     @ResponseStatus(BAD_REQUEST)
     public ErrorResponse onIllegalStartEndDate(final IllegalStartEndDate e) {
-        logger.warn("Неправильная дата начала и конца: {}", e);
+        log.warn("Неправильная дата начала и конца: ", e);
         return ErrorResponse.create(e, BAD_REQUEST, e.getMessage());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ErrorResponse onConstraintViolationException(final ConstraintViolationException e) {
-        logger.info("Ошибка валидации: ", e);
+        log.info("Ошибка валидации: ", e);
 
         List<BindingError> bindingErrors = new ArrayList<>(e.getConstraintViolations().size());
         e.getConstraintViolations().forEach(cv -> {
@@ -44,7 +46,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Throwable.class)
     public ErrorResponse onThrowable(final Throwable e) {
-        logger.error("Ошибка сервера: ", e);
+        log.error("Ошибка сервера: ", e);
         return ErrorResponse.create(e, INTERNAL_SERVER_ERROR, e.getMessage());
     }
 }
